@@ -6,6 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import MainScreen from './screen/MainScreen';
 import Login from './screen/Login';
+import Signup from './screen/Signup';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -32,7 +33,9 @@ const StackNavigator = () => {
         <Stack.Screen name="Login" options={{
           tabBarLabel: "Login", headerShown: false
         }} component={Login} />
-
+          <Stack.Screen name="Signup" options={{
+          tabBarLabel: "Signup", headerShown: false
+        }} component={Signup} />
       </Stack.Navigator>
     </NavigationContainer>
   );
