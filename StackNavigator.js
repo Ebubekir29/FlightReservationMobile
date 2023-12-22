@@ -4,9 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import MainScreen from './screen/MainScreen';
 import Login from './screen/Login';
 import Signup from './screen/Signup';
+import ProfileScreen from './screen/ProfileScreen';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -18,6 +20,13 @@ const StackNavigator = () => {
             <Entypo name="home" size={24} color="black" />
           ) : (
             <AntDesign name="home" size={24} color="black" />
+          ),
+        }} />
+         <Tab.Screen name="Profile" component={ProfileScreen} options={{
+          tabBarLabel: "Profile", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
+            <Ionicons name="person" size={24} color="black" />
+          ) : (
+            <Ionicons name="person-outline" size={24} color="black" />
           ),
         }} />
       </Tab.Navigator>
