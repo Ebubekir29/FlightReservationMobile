@@ -9,6 +9,7 @@ import MainScreen from './screen/MainScreen';
 import Login from './screen/Login';
 import Signup from './screen/Signup';
 import ProfileScreen from './screen/ProfileScreen';
+import UcusListele from './screen/UcusListele';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -45,6 +46,9 @@ const StackNavigator = () => {
           <Stack.Screen name="Signup" options={{
           tabBarLabel: "Signup", headerShown: false
         }} component={Signup} />
+         <Stack.Screen name="Ucuslar" component={UcusListele}   options={{
+          tabBarLabel: "Login",
+        }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,32 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { collection, query, where, doc, getDocs, getFirestore } from 'firebase/firestore';
+import app from '../firebase';
+import { useRoute } from '@react-navigation/native';
 
 export default function HomeScreen({ navigation }) {
   const [departureAirport, setDepartureAirport] = useState('');
   const [arrivalAirport, setArrivalAirport] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const firestore = getFirestore(app);
+  const route = useRoute();
+   const [ucuslar, setUcuslar] = useState([]);
+  const [showSelectedDate, setShowSelectedDate] = useState(false);
+  const formattedDate = selectedDate.toISOString().split('T')[0];
+  useEffect(() => {
+    const fetchUcuslar = async () => {
+      try {
+        const q = query(
+          collection(firestore, 'ucuslar'),
+          where('kalkisHavalimani', '==', departureAirport),
+          where('varisHavalimani', '==', arrivalAirport),
+          where('tarih', '==', formattedDate),
+        );
+        const querySnapshot = await getDocs(q);
+        const yeniUcuslar = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+        setUcuslar(yeniUcuslar);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUcuslar();
+  }, [departureAirport, arrivalAirport,selectedDate]);
+ 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
+
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
+
   const handleConfirmDate = (date) => {
     setSelectedDate(date);
+    setShowSelectedDate(true);
     hideDatePicker();
   };
 
-  const SearchFlights = () => {
-    navigation.navigate('Ucuslar', {
-      departureAirport,
-      arrivalAirport,
-      selectedDate,
-    });
-  };
+    const SearchFlights = async () => {
+      if (!departureAirport || !arrivalAirport || !selectedDate) {
+        alert('Lütfen tüm alanları doldurun.');
+        return;
+      }
+    
+      try {
+        const q = query(
+          collection(firestore, 'ucuslar'),
+          where('kalkisHavalimani', '==', departureAirport),
+          where('varisHavalimani', '==', arrivalAirport),
+          where('tarih', '==', formattedDate),
+        );
+    
+        const querySnapshot = await getDocs(q);
+        const yeniUcuslar = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+    
+        if (yeniUcuslar.length === 0) {
+          alert('Üzgünüz, uygun uçuş bulunamadı.');
+        } else {
+          // Uçuşlar bulundu, Ucuslar ekranına yönlendir
+          navigation.navigate('Ucuslar', {
+            departureAirport,
+            arrivalAirport,
+            selectedDate,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Uçuşlar getirilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      }
+    };
+
   return (
-    <View style={styles.container}>   
+    <View style={styles.container}>
       <Text style={styles.title}>Uçak Rezervasyonu</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -42,7 +98,9 @@ export default function HomeScreen({ navigation }) {
           onChangeText={(text) => setArrivalAirport(text)}
         />
         <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
-          <Text style={styles.dateButtonText}>Tarih Sec</Text>
+          <Text style={styles.dateButtonText}>
+            {showSelectedDate ? selectedDate.toDateString() : 'Tarih Seç'}
+          </Text>
         </TouchableOpacity>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
