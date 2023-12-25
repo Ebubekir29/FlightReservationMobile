@@ -4,6 +4,12 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
 import { View, Text, ActivityIndicator,TouchableOpacity,StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AirportCreate from './AirportCreate';
+import PlaneCreate from './PlaneCreate';
+import RouteCreate from './RouteCreate';
+import TicketCreate from './TicketCreate';
+import UserCreate from './UserCreate';
+import AirportGet from './AirportGet';
 
 const ProfileScreen = () => {
   const [role, setRole] = useState(null);
@@ -11,6 +17,28 @@ const ProfileScreen = () => {
   const auth = getAuth(app);
   const firestore = getFirestore(app);
   const navigation = useNavigation();
+
+  const AirportGet=() =>{
+    navigation.navigate('AirportGet')
+  };
+
+  const PlaneGet=() =>{
+    navigation.navigate('PlaneGet')
+  };
+
+  const RouteGet=() =>{
+    navigation.navigate('RouteGet')
+  };
+
+  const TicketGet=()=>{
+    navigation.navigate('TicketGet')
+  };
+
+  const UserGet=()=>{
+    navigation.navigate('UserGet')
+  };
+
+
 
   useEffect(() => {
     const cleanUp = onAuthStateChanged(auth, async (user) => { // kullanıcı giris tetiklendi
@@ -36,21 +64,40 @@ const ProfileScreen = () => {
     return () => cleanUp();
   }, []);
 
+  
+
   const renderViewByRole = () => {
     if (role === 'admin') {
       return (
-        <View style={{marginTop:'50%', alignItems:'center', justifyContent:'center'}}>
+        <View style={{marginTop:'30%', alignItems:'center', justifyContent:'center'}}>
            <Text style={styles.Text}>{role}</Text>
            <Text style={styles.Text}>{userEmail}</Text>
-          </View>
+        
+        <TouchableOpacity onPress={AirportGet} style={styles.butonYukle}>
+          <Text style={styles.buttonText}>Havalimanı Listele</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={PlaneGet} style={styles.butonYukle}>
+          <Text style={styles.buttonText}>Uçak Modeli Listele</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={RouteGet} style={styles.butonYukle}>
+          <Text style={styles.buttonText}>Rotaları Listele</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={TicketGet} style={styles.butonYukle}>
+          <Text style={styles.buttonText}>Biletleri Listele</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={UserGet} style={styles.butonYukle}>
+          <Text style={styles.buttonText}>Kullanıcıları Listele</Text>
+        </TouchableOpacity>
+
+        </View>
       
       );
     } else if (role === 'user') {
       return (
-        <View style={{marginTop:'70%', alignItems:'center', justifyContent:'center'}}>
+        <View style={{marginTop:'30%', alignItems:'center', justifyContent:'center'}}>
           <Text style={styles.Text}>{role}</Text>
           <Text style={styles.Text}>{userEmail}</Text> 
-          </View>
+        </View>
       );
     } else {
       return;
@@ -92,5 +139,26 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+
+  buttonLogin: {
+    marginTop:20,
+     width: 150,
+     height: 40,
+     borderRadius: 25,
+     alignItems: 'center',
+     justifyContent: 'center',
+     backgroundColor: '#3081D0',
+  },
+  butonYukle:{
+    backgroundColor:'#5246f2',
+    width:'90%',
+    height:50,
+    borderRadius:10,
+    alignSelf:'center',
+    marginTop:20,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+
 });
 export default ProfileScreen;
