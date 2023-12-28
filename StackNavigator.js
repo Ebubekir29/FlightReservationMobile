@@ -11,6 +11,7 @@ import Signup from './screen/Signup';
 import ProfileScreen from './screen/ProfileScreen';
 import UcusListele from './screen/UcusListele';
 import SeatSelection from './screen/SeatSelection';
+import MyTickets from './screen/MyTickets';
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -52,6 +53,9 @@ const StackNavigator = () => {
         }}/>
          <Stack.Screen name="SeatSelection" component={SeatSelection}   options={{
           tabBarLabel: "Admin",
+        }}/>
+         <Stack.Screen name="MyTickets" component={MyTickets}   options={{
+          tabBarLabel: "MyTickets",
         }}/>
       </Stack.Navigator>
     </NavigationContainer>

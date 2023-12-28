@@ -1,20 +1,22 @@
+
+
 import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { collection, query, where, doc, getDocs, getFirestore } from 'firebase/firestore';
 import app from '../firebase';
-import { useRoute } from '@react-navigation/native';
 
-export default function HomeScreen({ navigation }) {
+const MainScreen = ({ route,navigation }) => {
   const [departureAirport, setDepartureAirport] = useState('');
   const [arrivalAirport, setArrivalAirport] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const firestore = getFirestore(app);
-  const route = useRoute();
+  const{userName,userSurName} = route.params;
    const [ucuslar, setUcuslar] = useState([]);
   const [showSelectedDate, setShowSelectedDate] = useState(false);
   const formattedDate = selectedDate.toISOString().split('T')[0];
+  
   useEffect(() => {
     const fetchUcuslar = async () => {
       try {
@@ -68,11 +70,12 @@ export default function HomeScreen({ navigation }) {
         if (yeniUcuslar.length === 0) {
           alert('Üzgünüz, uygun uçuş bulunamadı.');
         } else {
-          // Uçuşlar bulundu, Ucuslar ekranına yönlendir
           navigation.navigate('Ucuslar', {
             departureAirport,
             arrivalAirport,
             selectedDate,
+            userName,
+            userSurName,
           });
         }
       } catch (error) {
@@ -162,3 +165,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
+export default MainScreen;

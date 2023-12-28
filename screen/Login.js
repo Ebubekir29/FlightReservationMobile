@@ -18,8 +18,11 @@ const LoginScreen = () => {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             Alert.alert("Login Succesfull.")
-            const user = userCredential.user;      
-             navigation.navigate('Main');         
+            const user = userCredential.user;
+            console.log(user.email);
+            const userData = docSnap.data();
+            const {userName,userSurName} = userData;
+            navigation.navigate('Main', { userName, userSurName });       
           } else {      
             Alert.alert("Tekrar Deneyin") 
               navigation.navigate('Login');
