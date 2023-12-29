@@ -12,7 +12,7 @@ const SeatSelection = ({ route,navigation }) => {
   };
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
+      shouldShowAlert: false,
       shouldPlaySound: true,
       shouldSetBadge: false,
     }),

@@ -4,12 +4,6 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
 import { View, Text, ActivityIndicator,TouchableOpacity,StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AirportCreate from './AirportCreate';
-import PlaneCreate from './PlaneCreate';
-import RouteCreate from './RouteCreate';
-import TicketCreate from './TicketCreate';
-import UserCreate from './UserCreate';
-import AirportGet from './AirportGet';
 
 const ProfileScreen = () => {
   const [role, setRole] = useState(null);

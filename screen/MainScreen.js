@@ -1,5 +1,3 @@
-
-
 import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";

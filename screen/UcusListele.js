@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet,Alert, TouchableOpacity } from 'react-native';
-import { collection, query, where, doc, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
 import app from '../firebase';
 import { useNavigation } from '@react-navigation/native';
 
 const Ucuslar = ({ route }) => {
-  const { departureAirport, arrivalAirport, fiyat, selectedDate, kalkisSaati, varisSaati } = route.params;
+  const { departureAirport, arrivalAirport, fiyat, selectedDate, 
+    kalkisSaati, varisSaati,userName,userSurName } = route.params;
   const [ucuslar, setUcuslar] = useState([]);
   const [selectedFlightId, setSelectedFlightId] = useState(null);
   const firestore = getFirestore(app);
@@ -29,7 +30,7 @@ const Ucuslar = ({ route }) => {
       }
     };
     fetchUcuslar();
-  }, [departureAirport, arrivalAirport, fiyat, selectedDate, kalkisSaati, varisSaati]);
+  }, [departureAirport, arrivalAirport, selectedDate]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleRowPress(item)}>
@@ -43,12 +44,21 @@ const Ucuslar = ({ route }) => {
   );
 
   const selectedUcus = () => {
-    const selectedFlight = ucuslar.find((item) => item.id === selectedFlightId);
+    const selectedFlight = ucuslar.find((item) => item.id === selectedFlightId)?.data;
+
     if (selectedFlight) {
-      navigation.navigate("SeatSelection", { selectedFlight: selectedFlight.data });
-    }
-    else{
-      Alert.alert("Lütfen ucus seciniz.")
+      navigation.navigate('SeatSelection', {
+        kalkisHavalimani: selectedFlight.kalkisHavalimani,
+        varisHavalimani: selectedFlight.varisHavalimani,
+        kalkisSaati: selectedFlight.kalkisSaati,
+        varisSaati: selectedFlight.varisSaati,
+        tarih: selectedFlight.tarih,
+        fiyat: selectedFlight.fiyat,
+        userName,
+        userSurName,
+      });
+    } else {
+      Alert.alert('Uçuş Seçilmedi', 'Lütfen bir uçuş seçin.');
     }
   };
 
@@ -104,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   selectedRow: {
-    backgroundColor: 'lightgreen', // veya başka bir renk
+    backgroundColor: 'lightgreen',
   },
   column: {
     flex: 1,
@@ -112,10 +122,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonSelectedUcus: {
-    // Button stilini burada ekleyebilirsin
+    backgroundColor: '#3498db', 
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 20, 
+    alignSelf: 'center', 
   },
   buttonText: {
-    // Button text stilini burada ekleyebilirsin
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center', // Ortaya hizalama
   },
 });
 

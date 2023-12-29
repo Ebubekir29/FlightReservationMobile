@@ -22,7 +22,10 @@ const LoginScreen = () => {
             console.log(user.email);
             const userData = docSnap.data();
             const {userName,userSurName} = userData;
-            navigation.navigate('Main', { userName, userSurName });       
+            console.log(userName);
+            navigation.navigate('Main', { userName, userSurName });     
+            setEmail("");
+            setPassword("");   
           } else {      
             Alert.alert("Tekrar Deneyin") 
               navigation.navigate('Login');
