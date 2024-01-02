@@ -1,96 +1,99 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import app from '../firebase';
-import { View, Text, ActivityIndicator,TouchableOpacity,StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getUserSession } from './userService';
 
 const ProfileScreen = () => {
   const [role, setRole] = useState(null);
-  const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
   const auth = getAuth(app);
   const firestore = getFirestore(app);
   const navigation = useNavigation();
 
-  const AirportGet=() =>{
-    navigation.navigate('AirportGet')
+  const RouteGet = () => {
+    navigation.navigate('RouteGet');
   };
 
-  const PlaneGet=() =>{
-    navigation.navigate('PlaneGet')
+  const TicketGet = () => {
+    navigation.navigate('TicketGet');
   };
 
-  const RouteGet=() =>{
-    navigation.navigate('RouteGet')
+  const UserGet = () => {
+    navigation.navigate('UserGet');
   };
 
-  const TicketGet=()=>{
-    navigation.navigate('TicketGet')
+  const HandleMyTickets = () => {
+    navigation.navigate('Tickets', { userId: auth.currentUser.uid });
   };
 
-  const UserGet=()=>{
-    navigation.navigate('UserGet')
+  const HandleLogOut = () => {
+
+    auth.signOut().then(() => {
+      console.log('Kullanıcı çıkış yaptı');
+
+      navigation.navigate('Login'); 
+    }).catch((error) => {
+      console.error('Çıkış yaparken bir hata oluştu:', error.message);
+    });
   };
-
-
 
   useEffect(() => {
-    const cleanUp = onAuthStateChanged(auth, async (user) => { // kullanıcı giris tetiklendi
+    const cleanUp = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDocRef = doc(firestore, 'users', user.uid);  
+        const userDocRef = doc(firestore, 'users', await getUserSession());
         try {
           const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) { 
+          if (userDoc.exists()) {
             const userData = userDoc.data();
-            setRole(userData.role);             //role bilgisi alınır 
-            setUserEmail(userData.userEmail);   //e mail bilgisi alınır
+            setRole(userData.role);
+            console.log(userData);
           } else {
             console.log('Kullanici rol bulunamadi.');
           }
         } catch (error) {
-          console.error( error);
+          console.error(error);
         }
       } else {
         console.log('Error');
       }
     });
-
+        navigation.navigate('Main');
     return () => cleanUp();
   }, []);
-
-  
 
   const renderViewByRole = () => {
     if (role === 'admin') {
       return (
-        <View style={{marginTop:'30%', alignItems:'center', justifyContent:'center'}}>
-           <Text style={styles.Text}>{role}</Text>
-           <Text style={styles.Text}>{userEmail}</Text>
-        
-        <TouchableOpacity onPress={AirportGet} style={styles.butonYukle}>
-          <Text style={styles.buttonText}>Havalimanı Listele</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={PlaneGet} style={styles.butonYukle}>
-          <Text style={styles.buttonText}>Uçak Modeli Listele</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={RouteGet} style={styles.butonYukle}>
-          <Text style={styles.buttonText}>Rotaları Listele</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={TicketGet} style={styles.butonYukle}>
-          <Text style={styles.buttonText}>Biletleri Listele</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={UserGet} style={styles.butonYukle}>
-          <Text style={styles.buttonText}>Kullanıcıları Listele</Text>
-        </TouchableOpacity>
+        <View style={{ marginTop: '30%', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={styles.Text}>Merhaba, {role} {userName}</Text>
 
+          <TouchableOpacity onPress={RouteGet} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Rotaları Listele</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={TicketGet} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Biletleri Listele</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={UserGet} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Kullanıcıları Listele</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={HandleLogOut} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Cikis Yap</Text>
+          </TouchableOpacity>
         </View>
-      
       );
     } else if (role === 'user') {
       return (
-        <View style={{marginTop:'30%', alignItems:'center', justifyContent:'center'}}>
-          <Text style={styles.Text}>{role}</Text>
-          <Text style={styles.Text}>{userEmail}</Text> 
+        <View style={{ marginTop: '30%', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={styles.Text}>Merhaba, {role} {userName}</Text>
+          <TouchableOpacity onPress={HandleMyTickets} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Biletlerim</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={HandleLogOut} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Cikis Yap</Text>
+          </TouchableOpacity>
         </View>
       );
     } else {
@@ -100,28 +103,25 @@ const ProfileScreen = () => {
 
   return (
     <View>
-      {role ? (   // Bir role degeri varsa renderViewByRole fonksiyonu calisir.
-        renderViewByRole() 
+      {role ? (
+        renderViewByRole()
       ) : (
-        <ActivityIndicator size="large" color="#0000ff" /> 
+        <ActivityIndicator size="large" color="#0000ff" />
       )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   Text: {
-    flexDirection:'column',
-  },
-  Text: {
-    flexDirection:'column',
+    flexDirection: 'column',
     fontSize: 25,
-    marginTop:5,
-    marginBottom:10,
+    marginTop: 5,
+    marginBottom: 10,
   },
   button: {
     backgroundColor: '#3498db',
@@ -135,24 +135,24 @@ const styles = StyleSheet.create({
   },
 
   buttonLogin: {
-    marginTop:20,
-     width: 150,
-     height: 40,
-     borderRadius: 25,
-     alignItems: 'center',
-     justifyContent: 'center',
-     backgroundColor: '#3081D0',
+    marginTop: 20,
+    width: 150,
+    height: 40,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#3081D0',
   },
-  butonYukle:{
-    backgroundColor:'#5246f2',
-    width:'90%',
-    height:50,
-    borderRadius:10,
-    alignSelf:'center',
-    marginTop:20,
-    justifyContent:'center',
-    alignItems:'center'
+  butonYukle: {
+    backgroundColor: '#5246f2',
+    width: '90%',
+    height: 50,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
 });
+
 export default ProfileScreen;

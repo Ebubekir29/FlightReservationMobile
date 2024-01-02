@@ -1,53 +1,36 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
-import { db,addDoc,collection, doc, setDoc } from "../firebase";
-import style from 'react-native-modal-picker/style';
-
+import { db,addDoc,collection } from "../firebase";
 
 const RouteCreate = () => {
-  const [havalimaniKalkis, sethavalimaniKalkis] = useState('');
-  const [havalimaniVaris, sethavalimaniVaris] = useState('');
-  const [sehirKalkis, setsehirKalkis] = useState('');
-  const [sehirVaris, setsehirVaris] = useState('');
-  const [ucakModel, setucakModel] = useState('');
-  const [tarihKalkis, settarihKalkis] = useState('');
-  const [saatKalkis, setsaatKalkis] = useState('');
-  const [saatVaris, setsaatVaris] = useState('');
-  const [biletFiyat, setbiletFiyat] = useState(0);
-
-
+  const [kalkisHavalimani, sethavalimaniKalkis] = useState('');
+  const [varisHavalimani, sethavalimaniVaris] = useState('');
+  const [tarih, settarihKalkis] = useState('');
+  const [kalkisSaati, setsaatKalkis] = useState('');
+  const [varisSaati, setsaatVaris] = useState('');
+  const [fiyat, setbiletFiyat] = useState(0);
   const navigation = useNavigation();
-
 
   const routeCreate = async() => {
     try{
-      const docRef = await addDoc(collection(db,"Route"),{
-        havalimaniKalkis: havalimaniKalkis,
-        havalimaniVaris: havalimaniVaris,
-        sehirKalkis: sehirKalkis,
-        sehirVaris: sehirVaris,
-        ucakModel: ucakModel,
-        tarihKalkis: tarihKalkis,
-        saatKalkis: saatKalkis,
-        saatVaris: saatVaris,
-        biletFiyat: biletFiyat
+      const docRef = await addDoc(collection(db,"ucuslar"),{
+        kalkisHavalimani: kalkisHavalimani,
+        varisHavalimani: varisHavalimani,
+        tarih: tarih,
+        kalkisSaati: kalkisSaati,
+        varisSaati: varisSaati,
+        fiyat: fiyat,
       });
       console.log('Route added!');
       alert("Rota başarıyla oluşturuldu.");
-      navigation.navigate('RouteGet');
+      navigation.navigate('Profile');
     }catch(e){
       console.error("Error adding document",e);
       alert("Rota oluşturulamadı , tekrar deneyiniz.");
-
   }  
-    
-
   }
-
   return (
-    
     //tarih işlemini düzelt 
     <>
       <View style={styles.header}>
@@ -58,9 +41,6 @@ const RouteCreate = () => {
 
           <TextInput onChangeText={(text) => sethavalimaniKalkis(text)} placeholder='Kalkış Havalimanı' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => sethavalimaniVaris(text)} placeholder='Varış Havalimanı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsehirKalkis(text)} placeholder='Kalkış Şehri' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsehirVaris(text)} placeholder='Varış Şehri' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setucakModel(text)} placeholder='Uçak Modeli' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => settarihKalkis(text)} placeholder='Kalkış Tarihi' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => setsaatKalkis(text)} placeholder='Kalkış Saati' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => setsaatVaris(text)} placeholder='Varış Saati' style={styles.inputStyle} />

@@ -5,14 +5,13 @@ import app from '../firebase';
 import { useNavigation } from '@react-navigation/native';
 
 const Ucuslar = ({ route }) => {
-  const { departureAirport, arrivalAirport, fiyat, selectedDate, 
-    kalkisSaati, varisSaati,userName,userSurName } = route.params;
+  const { departureAirport, arrivalAirport, fiyat, formattedDate,
+    kalkisSaati, varisSaati } = route.params;
   const [ucuslar, setUcuslar] = useState([]);
   const [selectedFlightId, setSelectedFlightId] = useState(null);
   const firestore = getFirestore(app);
   const navigation = useNavigation();
-  const formattedDate = selectedDate.toISOString().split('T')[0];
-
+  console.log("asada",formattedDate)
   useEffect(() => {
     const fetchUcuslar = async () => {
       try {
@@ -30,8 +29,11 @@ const Ucuslar = ({ route }) => {
       }
     };
     fetchUcuslar();
-  }, [departureAirport, arrivalAirport, selectedDate]);
+  }, [departureAirport, arrivalAirport,formattedDate]);
 
+  const handleLogout = () => {
+    navigation.navigate('Login')
+  };
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleRowPress(item)}>
       <View style={[styles.tableRow, item.id === selectedFlightId && styles.selectedRow]} key={item.id}>
@@ -54,8 +56,6 @@ const Ucuslar = ({ route }) => {
         varisSaati: selectedFlight.varisSaati,
         tarih: selectedFlight.tarih,
         fiyat: selectedFlight.fiyat,
-        userName,
-        userSurName,
       });
     } else {
       Alert.alert('Uçuş Seçilmedi', 'Lütfen bir uçuş seçin.');
@@ -81,9 +81,14 @@ const Ucuslar = ({ route }) => {
           </View>
         )}
       />
-      <TouchableOpacity onPress={selectedUcus} style={styles.buttonSelectedUcus}>
-        <Text style={styles.buttonText}>Devam et</Text>
-      </TouchableOpacity>
+     <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={selectedUcus} style={styles.buttonSelected}>
+          <Text style={styles.buttonText}>Devam Et</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleLogout()} style={styles.buttonSelected}>
+          <Text style={styles.buttonText}>Çıkış Yap</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     flex: 1,
     padding: 0,
-    backgroundColor: 'orange',
+    backgroundColor: 'lightgrey',
   },
   tableHeader: {
     flexDirection: 'row',
@@ -121,9 +126,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
-  buttonSelectedUcus: {
-    backgroundColor: '#3498db', 
-    padding: 20,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 80,
+    marginTop: 20,
+  },
+  buttonSelected: {
+    backgroundColor: 'darkblue', 
+    padding: 13,
     borderRadius: 10,
     marginTop: 20, 
     alignSelf: 'center', 
@@ -131,7 +142,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
-    textAlign: 'center', // Ortaya hizalama
+    textAlign: 'center', 
+  },
+  logoutButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'center',
   },
 });
 

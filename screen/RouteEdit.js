@@ -1,40 +1,30 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View,ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {db,update,updateDoc,collection,addDoc,getFirestore,app,auth,getDoc,doc,setDoc,getUser,uploadFile,ref,storage,getDownloadURL}from "../firebase";
-import style from 'react-native-modal-picker/style';
-
-
+import {db,doc}from "../firebase";
+import { updateDoc } from 'firebase/firestore';
 
 const RouteEdit = () => {
 
   const route=useRoute();
-  const[havalimaniKalkis, sethavalimaniKalkis]=useState(route.params.data.havalimaniKalkis);
-  const[havalimaniVaris, sethavalimaniVaris]=useState(route.params.data.havalimaniVaris);
-  const[sehirKalkis, setsehirKalkis]=useState(route.params.data.sehirKalkis);
-  const[sehirVaris, setsehirVaris]=useState(route.params.data.sehirVaris);
-  const[ucakModel, setucakModel]=useState(route.params.data.ucakModel);
-  const[tarihKalkis, settarihKalkis]=useState(route.params.data.tarihKalkis);
-  const[saatKalkis, setsaatKalkis]=useState(route.params.data.saatKalkis);
-  const[saatVaris, setsaatVaris]=useState(route.params.data.saatVaris);
-  const[biletFiyat, setbiletFiyat]=useState(route.params.data.biletFiyat);
-
+  const [kalkisHavalimani, setkalkisHavalimani] = useState(route.params.data.kalkisHavalimani);
+  const [varisHavalimani, setvarisHavalimani] = useState(route.params.data.varisHavalimani);
+  const [tarih, setTarih] = useState(route.params.data.tarih);
+  const [kalkisSaati, setKalkisSaati] = useState(route.params.data.kalkisSaati);
+  const [varisSaati, setVarisSaati] = useState(route.params.data.varisSaati);
+  const [fiyat, setFiyat] = useState(route.params.data.fiyat);
   const navigation = useNavigation();
 
   const routeEdit=async()=>{
     try{
-      const updateRoute = doc(db, "Route", route.params.id);
-      await updateDoc(updatePlane, {
-        havalimaniKalkis: havalimaniKalkis,
-        havalimaniVaris: havalimaniVaris,
-        sehirKalkis: sehirKalkis,
-        sehirVaris: sehirVaris,
-        ucakModel: ucakModel,
-        tarihKalkis: tarihKalkis,
-        saatKalkis: saatKalkis,
-        saatVaris: saatVaris,
-        biletFiyat: biletFiyat
+      const updateRoute = doc(db, "ucuslar", route.params.id);
+      await updateDoc(updateRoute, {
+        kalkisHavalimani: kalkisHavalimani,
+        varisHavalimani: varisHavalimani,
+        tarih: tarih,
+        kalkisSaati: kalkisSaati,
+        varisSaati: varisSaati,
+        fiyat: fiyat,
       })
       .then(()=>{
         alert("Veriler Başarıyla Güncellendi");
@@ -53,16 +43,12 @@ const RouteEdit = () => {
       <Text style={styles.headerText}>Route Edit</Text>
     </View>
     <ScrollView style={styles.container}>
-    <TextInput onChangeText={(text) => sethavalimaniKalkis(text)} value={havalimaniKalkis} placeholder='Kalkış Havalimanı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => sethavalimaniVaris(text)} value={havalimaniVaris} placeholder='Varış Havalimanı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsehirKalkis(text)} value={sehirKalkis} placeholder='Kalkış Şehri'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsehirVaris(text)} value={sehirVaris} placeholder='Varış Şehri'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setucakModel(text)} value={ucakModel} placeholder='Uçak Modeli'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => settarihKalkis(text)} value={tarihKalkis} placeholder='Kalkış Tarihi'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsaatKalkis(text)} value={saatKalkis} placeholder='Kalkış Saati'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsaatVaris(text)} value={saatVaris} placeholder='Varış Saati'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setbiletFiyat(text)} value={biletFiyat} placeholder='Bilet Fiyatı'style={styles.inputStyle}/>
-
+    <TextInput onChangeText={(text) => setkalkisHavalimani(text)} value={kalkisHavalimani} style={styles.inputStyle} />
+    <TextInput onChangeText={(text) => setvarisHavalimani(text)} value={varisHavalimani}  style={styles.inputStyle} />
+    <TextInput onChangeText={(text) => setTarih(text)} value={tarih} style={styles.inputStyle} />
+    <TextInput onChangeText={(text) => setKalkisSaati(text)} value={kalkisSaati} style={styles.inputStyle} />
+    <TextInput onChangeText={(text) => setVarisSaati(text)} value={varisSaati} style={styles.inputStyle} />
+    <TextInput onChangeText={(text) => setFiyat(text)} value={fiyat} style={styles.inputStyle} />
     <TouchableOpacity onPress={routeEdit} style={styles.butonYukle}>
       <Text style={{color:'#fff'}}>Rota'yı Düzenle</Text>
     </TouchableOpacity>

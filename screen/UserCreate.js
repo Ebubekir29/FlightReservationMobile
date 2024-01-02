@@ -1,105 +1,119 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { Alert, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, ScrollView, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
-import { db, addDoc, collection, doc, setDoc } from "../firebase";
-import style from 'react-native-modal-picker/style';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { db, doc, setDoc } from "../firebase";
 
-
-const UserCreate = () => {
-  const [adi, setadi] = useState("");;
-  const [soyadi, setsoyadi] = useState("");
-  const [telefon, settelefon] = useState("");
+const auth = getAuth();
+const SignupScreen = () => {
+  const [name, setName] = useState("");
+  const [surName, setSurName] = useState("");
+  const [phone, setPhone] = useState("");
   const [tcNo, setTcNo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-
   const navigation = useNavigation();
 
-
-  const userCreate = async () => {
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        Adi: adi,
-        Soyadi: soyadi,
-        Telefon: telefon,
-        TcNo: tcNo,
-        Email: email,
-        Password: password,
-        Role: role
+  const SignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        Alert.alert("Hesap Oluşturuldu.")
+        const user = userCredential.user;
+        const userUID = user.uid;
+        const userName = name;
+        const userSurName = surName;
+        const userPhone = phone;
+        const userTcNo = tcNo;
+        const userEmail = email;
+        const userSifre = password;
+        const userDoc = doc(db, 'users', userUID);
+        try {
+          await setDoc(userDoc, {
+            userUID: userUID,
+            userName: userName,
+            userSurName: userSurName,
+            userPhone: userPhone,
+            userTcNo: userTcNo,
+            userEmail: userEmail,
+            userSifre: userSifre,
+            role: role,
+          });
+          navigation.navigate('Profile');
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        Alert.alert("Error", error.message);
       });
-      console.log('User added!');
-      alert("Kullanıcı Başarıyla Oluşturuldu.");
-    } catch (e) {
-      console.error("Error adding document", e);
-    }
-
-  }
-
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>User Create</Text>
-      </View>
-      <TextInput onChangeText={(text) => setadi(text)} placeholder="Ad" style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setsoyadi(text)} placeholder="Soyad" style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setEmail(text)} placeholder="E-mail" style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => settelefon(text)} placeholder="Telefon" style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setTcNo(text)} placeholder="Tc No" style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setPassword(text)} placeholder="Şifre" secureTextEntry={true} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setRole(text)} placeholder="Role" style={styles.inputStyle} />
-      <TouchableOpacity onPress={userCreate} style={styles.butonYukle}>
-        <Text style={{ color: '#fff' }}>Kullanıcı'yı Ekle</Text>
-      </TouchableOpacity>
-    </View>);
+    <KeyboardAvoidingView style={styles.container} >
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <View style={styles.formContainer}>
+          <TextInput onChangeText={(text) => setName(text)} placeholder="Ad" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setSurName(text)} placeholder="Soyad" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setEmail(text)} placeholder="E-mail" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setPhone(text)} placeholder="Telefon" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setTcNo(text)} placeholder="Tc No" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setPassword(text)} placeholder="Şifre" style={styles.inputs} />
+          <TextInput onChangeText={(text) => setRole(text)} placeholder="Role" style={styles.inputs} />
+          <TouchableOpacity onPress={SignUp} style={styles.buttonSignup}>
+            <Text style={styles.buttonText}>Kayıt Ol</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 };
 
-export default UserCreate;
+export default SignupScreen;
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
-
-  header: {
-    height: 100,
-    width: '100%',
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#2E2E2E',
+    marginBottom: 20,
+  },
+  formContainer: {
+    width: '80%',
+    alignItems: 'center',
+  },
+  inputs: {
+    borderRadius: 30,
+    height: 40,
     backgroundColor: '#fff',
-    elevation: 5,
-    paddingLeft: 10,
-    justifyContent: 'center',
-    paddingTop: 30
-  },
-
-  headerText: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-
-  inputStyle: {
-    width: '90%',
-    height: 50,
-    borderRadius: 10,
-    borderWidth: 0.5,
-    paddingLeft: 20,
-    paddingRight: 20,
-    marginTop: 30,
-    alignSelf: 'center'
-  },
-
-  butonYukle: {
-    backgroundColor: '#5246f2',
-    width: '90%',
-    height: 50,
-    borderRadius: 10,
-    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#2E2E2E',
+    padding: 10,
     marginTop: 20,
+    width: '100%',
+  },
+  buttonSignup: {
+    marginTop: 30,
+    width: 150,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
-
-
+    backgroundColor: '#2E2E2E',
+  },
+  buttonText: {
+    color: '#FAD02E',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });

@@ -5,10 +5,11 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase';
 import { Alert,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , TouchableOpacity} from 'react-native';
 import { getAuth,signInWithEmailAndPassword} from "firebase/auth";
-
+import { setUserSessionWithId } from './userService';
 const auth = getAuth();
 const firestore = getFirestore(app);
 const LoginScreen = () => {
+  const [userId,setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const Login = () => {
@@ -18,14 +19,12 @@ const LoginScreen = () => {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             Alert.alert("Login Succesfull.")
+            setUserSessionWithId(userCredential.user.uid);
             const user = userCredential.user;
             console.log(user.email);
+            console.log(userCredential.user.uid);
             const userData = docSnap.data();
-            const {userName,userSurName} = userData;
-            console.log(userName);
-            navigation.navigate('Main', { userName, userSurName });     
-            setEmail("");
-            setPassword("");   
+            navigation.navigate('Main');   
           } else {      
             Alert.alert("Tekrar Deneyin") 
               navigation.navigate('Login');
@@ -44,7 +43,6 @@ const LoginScreen = () => {
   return (
     <KeyboardAvoidingView 
       style={{flex:1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 
     ><ImageBackground
         style={styles.imageBackground}
@@ -82,9 +80,8 @@ const styles = StyleSheet.create({
   imageBackground: {
     flex:1,
     marginTop:10,
-    height:'100%',
+    height:'120%',
     backgroundColor:'white',
-    
   },
   title: {
     marginTop: -20,
@@ -105,15 +102,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     
   },
-  forgotPassword: {
-    marginBottom:10,
-    marginLeft: '50%',
-    marginTop:20,
-    
-  },
-  forgotPasswordText: {
-    color: 'gray',
-  },
   buttonsContainer: {
    
     flexDirection: 'column',
@@ -130,7 +118,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#3081D0',
-    
+    marginTop:5,
+    marginBottom:10,
   },
   buttonSignup: {
     width: 350,
@@ -139,8 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#3081D0',
-    marginTop:10,
-    marginBottom:15,
+    
     
   },
   buttonText: {

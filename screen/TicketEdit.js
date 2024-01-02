@@ -1,47 +1,37 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View,ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {db,update,updateDoc,collection,addDoc,getFirestore,app,auth,getDoc,doc,setDoc,getUser,uploadFile,ref,storage,getDownloadURL}from "../firebase";
-import style from 'react-native-modal-picker/style';
+import {db,doc}from "../firebase";
+import { updateDoc } from 'firebase/firestore';
 
 const TicketEdit = () => {
 
   const route=useRoute();
 
-  const [havalimaniKalkis, sethavalimaniKalkis] = useState(route.params.data.havalimaniKalkis);
-  const [havalimaniVaris, sethavalimaniVaris] = useState(route.params.data.havalimaniVaris);
-  const [sehirKalkis, setsehirKalkis] = useState(route.params.data.sehirKalkis);
-  const [sehirVaris, setsehirVaris] = useState(route.params.data.sehirVaris);
-  const [ucakModel, setucakModel] = useState(route.params.data.ucakModel);
-  const [tarihKalkis, settarihKalkis] = useState(route.params.data.tarihKalkis);
-  const [saatKalkis, setsaatKalkis] = useState(route.params.data.saatKalkis);
-  const [saatVaris, setsaatVaris] = useState(route.params.data.saatVaris);
-  const [biletFiyat, setbiletFiyat] = useState(route.params.data.biletFiyat);
-  const [yolcuAdi, setyolcuAdi] = useState(route.params.data.yolcuAdi);
-  const [yolcuSoyadi, setyolcuSoyadi] = useState(route.params.data.yolcuSoyadi);
-  const [kullaniciId, setkullaniciId] = useState(route.params.data.kullaniciId);
-  const [koltukNo, setkoltukNo] = useState(route.params.data.koltukNo);
+  const [userName, setUserName] = useState(route.params.data.userName);
+  const [userSurName, setUserSurName] = useState(route.params.data.userSurName);
+  const [kalkisHavalimani, setkalkisHavalimani] = useState(route.params.data.kalkisHavalimani);
+  const [varisHavalimani, setvarisHavalimani] = useState(route.params.data.varisHavalimani);
+  const [tarih, setTarih] = useState(route.params.data.tarih);
+  const [kalkisSaati, setKalkisSaati] = useState(route.params.data.kalkisSaati);
+  const [varisSaati, setVarisSaati] = useState(route.params.data.varisSaati);
+  const [fiyat, setFiyat] = useState(route.params.data.fiyat);
+  const [selectedSeat, setSelectedSeat] = useState(route.params.data.selectedSeat);
 
   const navigation = useNavigation();
-
   const ticketEdit=async()=>{
     try{
       const updateTicket = doc(db, "Ticket", route.params.id);
       await updateDoc(updateTicket, {
-        havalimaniKalkis: havalimaniKalkis,
-        havalimaniVaris: havalimaniVaris,
-        sehirKalkis: sehirKalkis,
-        sehirVaris: sehirVaris,
-        ucakModel: ucakModel,
-        tarihKalkis: tarihKalkis,
-        saatKalkis: saatKalkis,
-        saatVaris: saatVaris,
-        biletFiyat: biletFiyat,
-        yolcuAdi: yolcuAdi,
-        yolcuSoyadi: yolcuSoyadi,
-        kullaniciId: kullaniciId,
-        koltukNo: koltukNo
+        userName: userName,
+        userSurName: userSurName,
+        kalkisHavalimani: kalkisHavalimani,
+        varisHavalimani: varisHavalimani,
+        tarih: tarih,
+        kalkisSaati: kalkisSaati,
+        varisSaati: varisSaati,
+        fiyat: fiyat,
+        selectedSeat: selectedSeat,
       })
       .then(()=>{
         alert("Bilet Başarıyla Güncellendi");
@@ -58,20 +48,22 @@ const TicketEdit = () => {
     <View style={styles.header}>
       <Text style={styles.headerText}>Ticket Edit</Text>
     </View>
-    <TextInput onChangeText={(text) => sethavalimaniKalkis(text)} value={havalimaniKalkis} placeholder='Kalkış Havalimanı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => sethavalimaniVaris(text)} value={havalimaniVaris} placeholder='Varış Havalimanı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsehirKalkis(text)} value={sehirKalkis} placeholder='Kalkış Şehri'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsehirVaris(text)} value={sehirVaris} placeholder='Varış Şehri'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setucakModel(text)} value={ucakModel} placeholder='Uçak Modeli'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => settarihKalkis(text)} value={tarihKalkis} placeholder='Kalkış Tarihi'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsaatKalkis(text)} value={saatKalkis} placeholder='Kalkış Saati'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setsaatVaris(text)} value={saatVaris} placeholder='Varış Saati'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setbiletFiyat(text)} value={biletFiyat} placeholder='Bilet Fiyatı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setyolcuAdi(text)} value={yolcuAdi} placeholder='Yolcu Adı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setyolcuSoyadi(text)} value={yolcuSoyadi} placeholder='Yolcu Soyadı'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setkullaniciId(text)} value={kullaniciId} placeholder='Kullanıcı Id'style={styles.inputStyle}/>
-    <TextInput onChangeText={(text) => setkoltukNo(text)} value={koltukNo} placeholder='Koltuk No'style={styles.inputStyle}/>
-
+    <ScrollView style={styles.container}>
+        <View style={styles.innerContainer}>
+          <TextInput onChangeText={(text) => setUserName(text)} value={userName} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setUserSurName(text)} value={userSurName} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setkalkisHavalimani(text)} value={kalkisHavalimani} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setvarisHavalimani(text)} value={varisHavalimani}  style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setTarih(text)} value={tarih} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setKalkisSaati(text)} value={kalkisSaati} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setVarisSaati(text)} value={varisSaati} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setSelectedSeat(text)} value={selectedSeat} style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setFiyat(text)} value={fiyat} style={styles.inputStyle} />
+          <TouchableOpacity onPress={ticketEdit} style={styles.buttonStyle}>
+            <Text style={{ color: '#fff' }}>Bilet'i Ekle</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     <TouchableOpacity onPress={ticketEdit} style={styles.butonYukle}>
       <Text style={{color:'#fff'}}>Bilet'i Düzenle</Text>
     </TouchableOpacity>

@@ -1,35 +1,32 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {db,update,updateDoc,collection,addDoc,getFirestore,app,auth,getDoc,doc,setDoc,getUser,uploadFile,ref,storage,getDownloadURL}from "../firebase";
-import style from 'react-native-modal-picker/style';
+import {db,doc}from "../firebase";
+import { updateDoc } from 'firebase/firestore';
 
 const UserEdit = () => {
 
   const route=useRoute();
-  const [adi, setadi] = useState(route.params.data.Adi);;
-  const [soyadi, setsoyadi] = useState(route.params.data.Soyadi);
-  const [telefon, settelefon] = useState(route.params.data.Telefon);
-  const [tcNo, setTcNo] = useState(route.params.data.TcNo);
-  const [email, setEmail] = useState(route.params.data.Email);
-  const [password, setPassword] = useState(route.params.data.Password);
-  const [role, setRole] = useState(route.params.data.Role);
-
+  const [userName, setUserName] = useState(route.params.data.userName);;
+  const [userSurName, setUserSurName] = useState(route.params.data.userSurName);
+  const [userPhone, setuserPhone] = useState(route.params.data.userPhone);
+  const [userTcNo, setUserTcNo] = useState(route.params.data.userTcNo);
+  const [userEmail, setUserEmail] = useState(route.params.data.userEmail);
+  const [userSifre, setUserSifre] = useState(route.params.data.userSifre);
+  const [role, setRole] = useState(route.params.data.role);
 
   const navigation = useNavigation();
-
   const userEdit=async()=>{
     try{
       const updateUser = doc(db, "users", route.params.id);
       await updateDoc(updateUser, {
-        Adi: adi,
-        Soyadi: soyadi,
-        Telefon: telefon,
-        TcNo: tcNo,
-        Email: email,
-        Password: password,
-        Role: role
+        userName: userName,
+        userSurName: userSurName,
+        userPhone: userPhone,
+        userTcNo: userTcNo,
+        userEmail: userEmail,
+        userSifre: userSifre,
+        role: role
       })
       .then(()=>{
         alert("Veriler Başarıyla Güncellendi");
@@ -46,13 +43,13 @@ const UserEdit = () => {
     <View style={styles.header}>
       <Text style={styles.headerText}>User Edit</Text>
     </View>
-    <TextInput onChangeText={(text) => setadi(text)} placeholder="Ad" value={adi} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setsoyadi(text)} placeholder="Soyad" value={soyadi} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setEmail(text)} placeholder="E-mail" value={email} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => settelefon(text)} placeholder="Telefon" value={telefon} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setTcNo(text)} placeholder="Tc No" value={tcNo} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setPassword(text)} placeholder="Şifre" value={password} secureTextEntry={true} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setRole(text)} placeholder="Role" value={role} style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setUserName(text)} value={userName} style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setUserSurName(text)} value={userSurName}  style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setUserEmail(text)} value={userEmail}  style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setuserPhone(text)} value={userPhone}  style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setUserTcNo(text)} value={userTcNo}  style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setUserSifre(text)} value={userSifre} style={styles.inputStyle} />
+      <TextInput onChangeText={(text) => setRole(text)} value={role}  style={styles.inputStyle} />
 
 
     <TouchableOpacity onPress={userEdit} style={styles.butonYukle}>

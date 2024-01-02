@@ -1,21 +1,23 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { collection, query, where, doc, getDocs, getFirestore } from 'firebase/firestore';
-import app from '../firebase';
+import { View, Text, TouchableOpacity, StyleSheet,Button } from 'react-native';
+import ModalSelector from 'react-native-modal-selector';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
+import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
+import app from "../firebase";
 
-const MainScreen = ({ route,navigation }) => {
-  const [departureAirport, setDepartureAirport] = useState('');
-  const [arrivalAirport, setArrivalAirport] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+const MainScreen = () => {
+  const [departureAirport, setKalkisHavalimani] = useState('');
+  const [arrivalAirport, setVarisHavalimani] = useState('');
+  const navigation = useNavigation();
+  const [items, setItems] = useState([]);
+  const [ucuslar, setUcuslar] = useState([]);
   const firestore = getFirestore(app);
-  const{userName,userSurName} = route.params;
-   const [ucuslar, setUcuslar] = useState([]);
+  const [date, setDate] = useState(new Date());
   const [showSelectedDate, setShowSelectedDate] = useState(false);
-  const formattedDate = selectedDate.toISOString().split('T')[0];
-  
-  useEffect(() => {
+  const formattedDate = date.toISOString().split('T')[0];
+
+  const handleUcusBul = async () => {
     const fetchUcuslar = async () => {
       try {
         const q = query(
@@ -27,141 +29,133 @@ const MainScreen = ({ route,navigation }) => {
         const querySnapshot = await getDocs(q);
         const yeniUcuslar = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
         setUcuslar(yeniUcuslar);
+  
+        
+        if (yeniUcuslar.length === 0) {
+          alert('Uygun uçuş bulunamadı. Lütfen başka bir tarih veya rota seçin.');
+          navigation.navigate('Main');
+          return;
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchUcuslar();
-  }, [departureAirport, arrivalAirport,selectedDate]);
- 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
+    navigation.navigate('Ucuslar', {
+      departureAirport,
+      arrivalAirport,
+      formattedDate,
+    });
   };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+    console.log('Selected Date:', currentDate);
   };
-
-  const handleConfirmDate = (date) => {
-    setSelectedDate(date);
+  const showMode = (currentMode) => {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange,
+      mode: currentMode,
+      is24Hour: true,
+    });
+  };
+  const showDatepicker = () => {
+    showMode('date');
     setShowSelectedDate(true);
-    hideDatePicker();
   };
-
-    const SearchFlights = async () => {
-      if (!departureAirport || !arrivalAirport || !selectedDate) {
-        alert('Lütfen tüm alanları doldurun.');
-        return;
-      }
-    
-      try {
-        const q = query(
-          collection(firestore, 'ucuslar'),
-          where('kalkisHavalimani', '==', departureAirport),
-          where('varisHavalimani', '==', arrivalAirport),
-          where('tarih', '==', formattedDate),
-        );
-    
-        const querySnapshot = await getDocs(q);
-        const yeniUcuslar = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
-    
-        if (yeniUcuslar.length === 0) {
-          alert('Üzgünüz, uygun uçuş bulunamadı.');
-        } else {
-          navigation.navigate('Ucuslar', {
-            departureAirport,
-            arrivalAirport,
-            selectedDate,
-            userName,
-            userSurName,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        alert('Uçuşlar getirilirken bir hata oluştu. Lütfen tekrar deneyin.');
-      }
-    };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Uçak Rezervasyonu</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Kalkış Havalimanı"
-          value={departureAirport}
-          onChangeText={(text) => setDepartureAirport(text)}
+      <View style={styles.formContainer}>
+        <Text style={styles.label}>Kalkış Havalimanı:</Text>
+        <ModalSelector
+          data={[
+            { key: 0, label: 'Istanbul', value: 'Istanbul' },
+            { key: 1, label: 'Ankara', value: 'Ankara' },
+          ]}
+          initValue={departureAirport}
+          onChange={(option) => setKalkisHavalimani(option.value)}
+          animationType="slide"
+          optionTextStyle={{ color: '#3498db' }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Varış Havalimanı"
-          value={arrivalAirport}
-          onChangeText={(text) => setArrivalAirport(text)}
+
+        <Text style={styles.label}>Varış Havalimanı:</Text>
+        <ModalSelector
+          data={[
+            { key: 0, label: 'Ankara', value: 'Ankara' },
+            { key: 1, label: 'Istanbul', value: 'Istanbul' },
+          ]}
+          initValue={arrivalAirport}
+          onChange={(option) => setVarisHavalimani(option.value)}
+          animationType="slide"
+          optionTextStyle={{ color: '#3498db' }}
         />
-        <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
+        <TouchableOpacity style={styles.dateButton} onPress={showDatepicker}>
           <Text style={styles.dateButtonText}>
-            {showSelectedDate ? selectedDate.toDateString() : 'Tarih Seç'}
+            {showSelectedDate ? formattedDate : 'Tarih Seç'}
           </Text>
         </TouchableOpacity>
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="date"
-          onConfirm={handleConfirmDate}
-          onCancel={hideDatePicker}
-        />
       </View>
-      <TouchableOpacity style={styles.searchButton} onPress={SearchFlights}>
+     
+      <TouchableOpacity style={styles.ucusBulButton} onPress={handleUcusBul}>
         <Text style={styles.buttonText}>Uçuş Bul</Text>
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgreen',
+    backgroundColor: '#ecf0f1',
   },
-  logo: {
-    width: 500,
-    height: 250,
-    resizeMode: 'contain',
+  formContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 10,
+    elevation: 5,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#2c3e50',
   },
-  inputContainer: {
-    marginBottom: 20,
+  dateText: {
+    fontSize: 16,
+    marginBottom: 16,
+    color: '#2c3e50',
+    textAlign: 'center',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
+  ucusBulButton: {
+    backgroundColor: '#3498db',
     padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
   },
   dateButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
+    borderWidth:1,
+    borderColor:'grey',
+    marginTop:10,
+    alignItems:'center',
   },
   dateButtonText: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
-  },
-  searchButton: {
-    backgroundColor: '#3498db',
-    padding: 10,
-    borderRadius: 5,
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
+    textAlign: 'center',
   },
 });
 
 export default MainScreen;
+
+

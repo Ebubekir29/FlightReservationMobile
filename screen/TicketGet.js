@@ -1,10 +1,8 @@
-import { FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity,Image } from 'react-native'
+import { FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity,Image,Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import { QuerySnapshot, deleteDoc, getDocs } from 'firebase/firestore';
-import { db, collection, addDoc, getFirestore, app, auth, getDoc, doc, setDoc, getUser, uploadFile, ref, storage, getDownloadURL } from "../firebase";
-import style from 'react-native-modal-picker/style';
+import { deleteDoc, getDocs } from 'firebase/firestore';
+import { db, collection,doc,} from "../firebase";
 
 const TicketGet = () => {
   const navigation = useNavigation();
@@ -24,11 +22,27 @@ const TicketGet = () => {
   };
 
 
- const ticketDelete=async(docId)=>{
-  await deleteDoc(doc(db,"Ticket",docId));
-  alert("Bilet başarıyla silindi.");
-  ticketGet();
- };
+  const ticketDelete = async (docId) => {
+    Alert.alert(
+      "Uyarı",
+      "Kullanıcıyı silmek istediğinizden emin misiniz?",
+      [
+        {
+          text: "İptal",
+          style: "cancel",
+        },
+        {
+          text: "Sil",
+          onPress: async () => {
+            await deleteDoc(doc(db, "Ticket", docId));
+            alert("Bilet başarıyla silindi.");
+            ticketGet();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
  const ticketCreate=()=>{
   navigation.navigate('TicketCreate');
@@ -49,19 +63,16 @@ const TicketGet = () => {
             return (
               <View style={styles.itemView}>
                 <View style={styles.itemText}>
-                  <Text style={styles.nameText}>Kalkış Havalimanı : {item.data.havalimaniKalkis}</Text>
-                  <Text style={styles.nameText}>Varış Havalimanı : {item.data.havalimaniVaris}</Text>
-                  <Text style={styles.nameText}>Kalkış Şehri : {item.data.sehirKalkis}</Text>
-                  <Text style={styles.nameText}>Varış Şehri : {item.data.sehirVaris}</Text>
-                  <Text style={styles.nameText}>Uçak Modeli : {item.data.ucakModel}</Text>
-                  <Text style={styles.nameText}>Kalkış Tarihi : {item.data.tarihKalkis}</Text>
-                  <Text style={styles.nameText}>Kalkış Saati : {item.data.saatKalkis}</Text>
-                  <Text style={styles.nameText}>Varış Saati : {item.data.saatVaris}</Text>
-                  <Text style={styles.nameText}>Bilet Fiyatı : {item.data.biletFiyat}</Text>
-                  <Text style={styles.nameText}>Yolcu Adı : {item.data.yolcuAdi}</Text>
-                  <Text style={styles.nameText}>Yolcu Soyadı : {item.data.yolcuSoyadi}</Text>
-                  <Text style={styles.nameText}>Kullanıcı Id : {item.data.kullaniciId}</Text>
-                  <Text style={styles.nameText}>Koltuk No : {item.data.koltukNo}</Text>
+                  <Text style={styles.nameText}>Yolcu Adı : {item.data.userName}</Text>
+                  <Text style={styles.nameText}>Yolcu Soyadı : {item.data.userSurName}</Text>
+                  <Text style={styles.nameText}>Kalkış Havalimanı : {item.data.kalkisHavalimani}</Text>
+                  <Text style={styles.nameText}>Varış Havalimanı : {item.data.varisHavalimani}</Text>
+                  <Text style={styles.nameText}>Kalkış Tarihi : {item.data.tarih}</Text>
+                  <Text style={styles.nameText}>Kalkış Saati : {item.data.kalkisSaati}</Text>
+                  <Text style={styles.nameText}>Varış Saati : {item.data.varisSaati}</Text>
+                  <Text style={styles.nameText}>Koltuk No : {item.data.selectedSeat}</Text>
+                  <Text style={styles.nameText}>Bilet Fiyatı : {item.data.fiyat}</Text>
+
                 </View>
                 <View style={{ margin: 10 }}>
                   <TouchableOpacity
@@ -86,11 +97,9 @@ const TicketGet = () => {
                 </View>
               </View>
             );
-
           } } />
       </View></>
   );
-
 };
 
 export default TicketGet;

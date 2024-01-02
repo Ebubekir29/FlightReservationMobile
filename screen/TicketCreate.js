@@ -1,96 +1,77 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
-import { db, doc, setDoc,addDoc } from "../firebase";
-import style from 'react-native-modal-picker/style';
-
+import { db, doc, setDoc, addDoc, collection } from "../firebase";
 
 const TicketCreate = () => {
-  const [havalimaniKalkis, sethavalimaniKalkis] = useState('');
-  const [havalimaniVaris, sethavalimaniVaris] = useState('');
-  const [sehirKalkis, setsehirKalkis] = useState('');
-  const [sehirVaris, setsehirVaris] = useState('');
-  const [ucakModel, setucakModel] = useState('');
-  const [tarihKalkis, settarihKalkis] = useState('');
-  const [saatKalkis, setsaatKalkis] = useState('');
-  const [saatVaris, setsaatVaris] = useState('');
-  const [biletFiyat, setbiletFiyat] = useState(0);
-  const [yolcuAdi, setyolcuAdi] = useState('');
-  const [yolcuSoyadi, setyolcuSoyadi] = useState('');
-  const [kullaniciId, setkullaniciId] = useState('');
-  const [koltukNo, setkoltukNo] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userSurName, setUserSurName] = useState('');
+  const [kalkisHavalimani, setkalkisHavalimani] = useState('');
+  const [varisHavalimani, setvarisHavalimani] = useState('');
+  const [tarih, setTarih] = useState('');
+  const [kalkisSaati, setKalkisSaati] = useState('');
+  const [varisSaati, setVarisSaati] = useState('');
+  const [fiyat, setFiyat] = useState(0);
+  const [selectedSeat, setSelectedSeat] = useState('');
 
   const navigation = useNavigation();
 
   const ticketCreate = async () => {
     try {
       const docRef = await addDoc(collection(db, "Ticket"), {
-        havalimaniKalkis: havalimaniKalkis,
-        havalimaniVaris: havalimaniVaris,
-        sehirKalkis: sehirKalkis,
-        sehirVaris: sehirVaris,
-        ucakModel: ucakModel,
-        tarihKalkis: tarihKalkis,
-        saatKalkis: saatKalkis,
-        saatVaris: saatVaris,
-        biletFiyat: biletFiyat,
-        yolcuAdi: yolcuAdi,
-        yolcuSoyadi: yolcuSoyadi,
-        kullaniciId: kullaniciId,
-        koltukNo: koltukNo
+        userName: userName,
+        userSurName: userSurName,
+        kalkisHavalimani: kalkisHavalimani,
+        varisHavalimani: varisHavalimani,
+        tarih: tarih,
+        kalkisSaati: kalkisSaati,
+        varisSaati: varisSaati,
+        fiyat: fiyat,
+        selectedSeat: selectedSeat,
       });
       console.log('Ticket added!');
+      navigation.navigate('Profile');
     } catch (e) {
       console.error("Error adding document", e);
     }
   }
 
-
-
   return (
-
-    //tarih işlemini düzelt 
-
     <>
-
       <View style={styles.header}>
         <Text style={styles.headerText}>Ticket Create</Text>
       </View>
       <ScrollView style={styles.container}>
-        <View style={styles.container}>
-
-          <TextInput onChangeText={(text) => sethavalimaniKalkis(text)} placeholder='Kalkış Havalimanı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => sethavalimaniVaris(text)} placeholder='Varış Havalimanı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsehirKalkis(text)} placeholder='Kalkış Şehri' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsehirVaris(text)} placeholder='Varış Şehri' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setucakModel(text)} placeholder='Uçak Modeli' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => settarihKalkis(text)} placeholder='Kalkış Tarihi' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsaatKalkis(text)} placeholder='Kalkış Saati' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setsaatVaris(text)} placeholder='Varış Saati' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setbiletFiyat(text)} placeholder='Bilet Fiyatı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setyolcuAdi(text)} placeholder='Yolcu Adı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setyolcuSoyadi(text)} placeholder='Yolcu Soyadı' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setkoltukNo(text)} placeholder='Koltuk No' style={styles.inputStyle} />
-          <TextInput onChangeText={(text) => setkullaniciId(text)} placeholder='Kullanıcı Id' style={styles.inputStyle} />
-
-          <TouchableOpacity onPress={ticketCreate} style={styles.butonYukle}>
+        <View style={styles.innerContainer}>
+          <TextInput onChangeText={(text) => setUserName(text)} placeholder='Yolcu Adı' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setUserSurName(text)} placeholder='Yolcu Soyadı' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setkalkisHavalimani(text)} placeholder='Kalkış Havalimanı' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setvarisHavalimani(text)} placeholder='Varış Havalimanı' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setTarih(text)} placeholder='Kalkış Tarihi' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setKalkisSaati(text)} placeholder='Kalkış Saati' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setVarisSaati(text)} placeholder='Varış Saati' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setSelectedSeat(text)} placeholder='Koltuk No' style={styles.inputStyle} />
+          <TextInput onChangeText={(text) => setFiyat(text)} placeholder='Bilet Fiyatı' style={styles.inputStyle} />
+          <TouchableOpacity onPress={ticketCreate} style={styles.buttonStyle}>
             <Text style={{ color: '#fff' }}>Bilet'i Ekle</Text>
           </TouchableOpacity>
         </View>
-
-      </ScrollView></>
+      </ScrollView>
+    </>
   );
 };
 
 export default TicketCreate;
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
   },
-
+  innerContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
   header: {
     height: 100,
     width: '100%',
@@ -100,12 +81,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 30
   },
-
   headerText: {
     fontSize: 18,
     fontWeight: '700',
   },
-
   inputStyle: {
     width: '90%',
     height: 50,
@@ -116,8 +95,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignSelf: 'center'
   },
-
-  butonYukle: {
+  buttonStyle: {
     backgroundColor: '#5246f2',
     width: '90%',
     height: 50,
@@ -126,8 +104,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom:5
+    marginBottom: 5
   }
-
-
 });

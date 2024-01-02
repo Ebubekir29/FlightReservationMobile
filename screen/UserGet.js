@@ -1,10 +1,8 @@
-import { FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity,Image } from 'react-native'
+import { FlatList, StyleSheet, Text, View, TextInput, TouchableOpacity,Image,Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import { QuerySnapshot, deleteDoc, getDocs } from 'firebase/firestore';
-import { db, collection, addDoc, getFirestore, app, auth, getDoc, doc, setDoc, getUser, uploadFile, ref, storage, getDownloadURL } from "../firebase";
-import style from 'react-native-modal-picker/style';
+import { deleteDoc, getDocs } from 'firebase/firestore';
+import { db, collection, doc} from "../firebase";
 
 const UserGet = () => {
   const navigation = useNavigation();
@@ -24,11 +22,27 @@ const UserGet = () => {
   };
 
 
- const userDelete=async(docId)=>{
-  await deleteDoc(doc(db,"users",docId));
-  alert("Kullanıcı başarıyla silindi.");
-  userGet();
- };
+  const userDelete = async (docId) => {
+    Alert.alert(
+      "Uyarı",
+      "Kullanıcıyı silmek istediğinizden emin misiniz?",
+      [
+        {
+          text: "İptal",
+          style: "cancel",
+        },
+        {
+          text: "Sil",
+          onPress: async () => {
+            await deleteDoc(doc(db, "users", docId));
+            alert("Kullanıcı başarıyla silindi.");
+            userGet();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
  const userCreate=()=>{
   navigation.navigate('UserCreate');
@@ -45,18 +59,17 @@ const UserGet = () => {
     <View style={styles.container}>
         <FlatList
           data={items}
-          renderItem={({ item, index }) => {
+          renderItem={({ item}) => {
             return (
               <View style={styles.itemView}>
                 <View style={styles.itemText}>
-                  <Text style={styles.nameText}>Kullanıcı Id : {item.id}</Text>
-                  <Text style={styles.nameText}>Adı : {item.data.Adi}</Text>
-                  <Text style={styles.nameText}>Soyadı : {item.data.Soyadi}</Text>
-                  <Text style={styles.nameText}>Email : {item.data.Email}</Text>
-                  <Text style={styles.nameText}>Telefon : {item.data.Telefon}</Text>
-                  <Text style={styles.nameText}>TcNo : {item.data.TcNo}</Text>
-                  <Text style={styles.nameText}>Password : {item.data.Password}</Text>
-                  <Text style={styles.nameText}>Role : {item.data.Role}</Text>
+                  <Text style={styles.nameText}>Adı : {item.data.userName}</Text>
+                  <Text style={styles.nameText}>Soyadı : {item.data.userSurName}</Text>
+                  <Text style={styles.nameText}>Email : {item.data.userEmail}</Text>
+                  <Text style={styles.nameText}>Telefon : {item.data.userPhone}</Text>
+                  <Text style={styles.nameText}>TcNo : {item.data.userTcNo}</Text>
+                  <Text style={styles.nameText}>Password : {item.data.userSifre}</Text>
+                  <Text style={styles.nameText}>Role : {item.data.role}</Text>
                 </View>
                 <View style={{ margin: 10 }}>
                   <TouchableOpacity
