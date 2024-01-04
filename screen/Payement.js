@@ -23,48 +23,61 @@ const MyTickets = ({ route }) => {
   const navigation = useNavigation();
     
 
-  const handlePayment = () => {
-    const fetchUcuslar = async () => {
-        try {
-          const q = query(
-            collection(firestore, 'odeme'),
-            where('cardName', '==', cardName),
-            where('cardNumber', '==', cardNumber),
-            where('cardCVV', '==', cvv),
-          );
-          const querySnapshot = await getDocs(q);
-          const newPayments = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
-          setPayments(newPayments);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchUcuslar();
-      const docRef =  addDoc(collection(db, "Ticket"), {
-        userName        : userName,
-        userSurName     : userSurName,
-        kalkisHavalimani: kalkisHavalimani,
-        varisHavalimani : varisHavalimani,
-        kalkisSaati     : kalkisSaati,
-        varisSaati      : varisSaati,
-        tarih           : tarih,
-        selectedSeat    : selectedSeat,
-        fiyat           : fiyat,
-        userid          : userid
-    });
-    Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'THY',
-          body: 'Biletiniz basarılı bir sekilde olusturulmustur.İyi yolculuklar dileriz.'
-        },
-        trigger: {
-          seconds: 3,
-        },
-      });
-      Alert.alert("Ödeme basarılı.Biletiniz oluşturuldu.");
-      navigation.navigate('MyTickets', { selectedSeat, kalkisHavalimani,varisHavalimani,tarih,kalkisSaati,varisSaati,fiyat
-        ,userName,userSurName });
+  const handlePayment = async () => {
+    if (!cardName || !cardNumber || !cvv) {
+      Alert.alert("Tüm bilgileri doldurmalısınız.");
+      return;
+    }
+  
+    try {
+      const q = query(
+        collection(firestore, 'odeme'),
+        where('cardName', '==', cardName),
+        where('cardNumber', '==', cardNumber),
+        where('cardCVV', '==', cvv),
+      );
+      const querySnapshot = await getDocs(q);
+      const newPayments = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+      console.log(newPayments);
+      if (newPayments.length === 0) {
+        Alert.alert("Veriler veritabanıyla eşleşmedi. Lütfen tekrar deneyiniz.");
+        return;
+      }
+      else{
+        const docRef = addDoc(collection(db, "Ticket"), {
+          userName: userName,
+          userSurName: userSurName,
+          kalkisHavalimani: kalkisHavalimani,
+          varisHavalimani: varisHavalimani,
+          kalkisSaati: kalkisSaati,
+          varisSaati: varisSaati,
+          tarih: tarih,
+          selectedSeat: selectedSeat,
+          fiyat: fiyat,
+          userid: userid
+        });
+      
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'THY',
+            body: 'Biletiniz başarıyla oluşturulmuştur. İyi yolculuklar dileriz.'
+          },
+          trigger: {
+            seconds: 3,
+          },
+        });
+      
+        Alert.alert("Ödeme başarıyla gerçekleştirildi. Biletiniz oluşturuldu.");
+        navigation.navigate('MyTickets', {
+          selectedSeat, kalkisHavalimani, varisHavalimani, tarih, kalkisSaati, varisSaati, fiyat,
+          userName, userSurName
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
 
   const handleHome = () => {

@@ -28,12 +28,12 @@ import { setUserSessionWithId } from './userService';
             console.log(userCredential.user.uid);
             navigation.navigate('Main');   
           } else {      
-            Alert.alert("Tekrar Deneyin") 
+            Alert.alert("Tekrar Deneyin");
               navigation.navigate('Login');
           }
       })
       .catch(error => {
-        Alert.alert("Error", error.message); 
+        Alert.alert("Error", 'Kimlik dogrulama hatası'); 
       });
   };
   
@@ -53,7 +53,7 @@ import { setUserSessionWithId } from './userService';
       ></ImageBackground>
       
       <View style={styles.container}>
-        <Text style={styles.title}>Ucak Rezesvasyon Sistemi</Text>
+        <Text style={styles.title}>Ucak Rezesvasyonu</Text>
         <TextInput onChangeText={text =>setEmail(text)} value={email} placeholder="E-mail" style={styles.loginInput} />
         <TextInput onChangeText={text =>setPassword(text)} value={password} placeholder="Şifre"   style={styles.loginInput} secureTextEntry={true}/>
         <View style={styles.container}>

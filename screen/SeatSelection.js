@@ -17,8 +17,8 @@ const SeatSelection = ({ route, navigation }) => {
     setSelectedSeat(seat);
   };
 
-  const handleLogout = () => {
-    navigation.navigate('Login');
+  const handleHome = () => {
+    navigation.navigate('Main')
   };
 
   useEffect(() => {
@@ -95,8 +95,8 @@ const SeatSelection = ({ route, navigation }) => {
           color="darkblue"
         />
       )}
-       <TouchableOpacity onPress={() => handleLogout()} style={styles.logoutButton}>
-          <Text style={styles.buttonText}>Çıkış Yap</Text>
+       <TouchableOpacity onPress={() => handleLogout()} style={styles.HomeButton}>
+          <Text style={styles.buttonText}>Ana Sayfa</Text>
        </TouchableOpacity>
     </ScrollView>
   );
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     color: 'white',
     },
-    logoutButton: {
+    HomeButton: {
     backgroundColor: 'darkblue',
     padding: 10,
     alignSelf: 'center',

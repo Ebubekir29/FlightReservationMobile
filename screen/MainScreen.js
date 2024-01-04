@@ -34,24 +34,26 @@ const MainScreen = () => {
         const yeniUcuslar = querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
         setUcuslar(yeniUcuslar);
   
-        
+        setKalkisHavalimani("");
+        setVarisHavalimani("");
         if (yeniUcuslar.length === 0) {
-          alert('Uygun uçuş bulunamadı. Lütfen başka bir tarih veya rota seçin.');
-          setKalkisHavalimani("");
-          setVarisHavalimani("");
+          alert('Uygun uçuş bulunamadı. Lütfen başka bir rota seçin.');
           navigation.navigate('Main');
           return;
+        }
+        else{
+          alert('Ucus bulundu.');
+          navigation.navigate('Ucuslar', {
+            departureAirport,
+            arrivalAirport,
+            formattedDate,
+          });
         }
       } catch (error) {
         console.error(error);
       }
     };
     fetchUcuslar();
-    navigation.navigate('Ucuslar', {
-      departureAirport,
-      arrivalAirport,
-      formattedDate,
-    });
   };
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
