@@ -35,7 +35,7 @@ const TicketEdit = () => {
       })
       .then(()=>{
         alert("Bilet Başarıyla Güncellendi");
-        navigation.navigate('TicketGet');
+        navigation.navigate('Profile');
       }) 
     }catch(e){
       alert("Güncelleme başarısız,error"+e);

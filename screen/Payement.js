@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet,Alert, TouchableOpacity,TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet,Alert, TouchableOpacity,TextInput } from 'react-native';
 import { query, where, getDocs, getFirestore } from 'firebase/firestore';
 import app,{collection,addDoc,db} from '../firebase';
 import { useNavigation } from '@react-navigation/native';
-import { getUserSession } from './userService';
+import * as Notifications from 'expo-notifications';
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
 const MyTickets = ({ route }) => {
     const { kalkisHavalimani, varisHavalimani, tarih,
          kalkisSaati, varisSaati, fiyat,userName,userSurName,selectedSeat,userid } = route.params;
@@ -14,6 +21,7 @@ const MyTickets = ({ route }) => {
     const [payments, setPayments] = useState([]);
     const firestore = getFirestore(app);
   const navigation = useNavigation();
+    
 
   const handlePayment = () => {
     const fetchUcuslar = async () => {
@@ -44,10 +52,20 @@ const MyTickets = ({ route }) => {
         fiyat           : fiyat,
         userid          : userid
     });
+    Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'THY',
+          body: 'Biletiniz basarılı bir sekilde olusturulmustur.İyi yolculuklar dileriz.'
+        },
+        trigger: {
+          seconds: 3,
+        },
+      });
       Alert.alert("Ödeme basarılı.Biletiniz oluşturuldu.");
       navigation.navigate('MyTickets', { selectedSeat, kalkisHavalimani,varisHavalimani,tarih,kalkisSaati,varisSaati,fiyat
         ,userName,userSurName });
   };
+
 
   const handleHome = () => {
     navigation.navigate('Main');
@@ -86,8 +104,11 @@ const MyTickets = ({ route }) => {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => handlePayment()} style={styles.HomeButton}>
+          <TouchableOpacity onPress={() => handlePayment()} style={styles.Button}>
             <Text style={styles.buttonText}>Bilet Oluştur</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleHome()} style={styles.Button}>
+            <Text style={styles.buttonText}>Ana Sayfa</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -127,34 +148,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  detailLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  detailText: {
-    fontSize: 18,
-    color: '#555',
-  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  HomeButton: {
-    backgroundColor: '#3498db',
+  Button: {
+    backgroundColor: 'darkblue',
     padding: 10,
     borderRadius: 10,
     alignSelf: 'center',
     marginTop: 20,
     marginRight:10,
-  },
-  logoutButton: {
-    backgroundColor: '#e74c3c',
-    padding: 10,
-    borderRadius: 10,
-    alignSelf: 'center',
-    marginTop: 20,
   },
   buttonText: {
     color: 'white',

@@ -15,9 +15,13 @@ const MainScreen = () => {
   const firestore = getFirestore(app);
   const [date, setDate] = useState(new Date());
   const [showSelectedDate, setShowSelectedDate] = useState(false);
-  const formattedDate = date.toISOString().split('T')[0];
-
+  const formattedDate = date.toLocaleDateString('tr-TR');
+  console.log("tarih",formattedDate);
   const handleUcusBul = async () => {
+    if (!departureAirport || !arrivalAirport) {
+      alert('Lütfen ucus girin.');
+      return;
+    }
     const fetchUcuslar = async () => {
       try {
         const q = query(
@@ -33,6 +37,8 @@ const MainScreen = () => {
         
         if (yeniUcuslar.length === 0) {
           alert('Uygun uçuş bulunamadı. Lütfen başka bir tarih veya rota seçin.');
+          setKalkisHavalimani("");
+          setVarisHavalimani("");
           navigation.navigate('Main');
           return;
         }
@@ -73,6 +79,9 @@ const MainScreen = () => {
           data={[
             { key: 0, label: 'Istanbul', value: 'Istanbul' },
             { key: 1, label: 'Ankara', value: 'Ankara' },
+            { key: 2, label: 'Izmir', value: 'Izmir' },
+            { key: 3, label: 'Konya', value: 'Konya' },
+            { key: 4, label: 'Trabzon', value: 'Trabzon' },
           ]}
           initValue={departureAirport}
           onChange={(option) => setKalkisHavalimani(option.value)}
@@ -83,8 +92,11 @@ const MainScreen = () => {
         <Text style={styles.label}>Varış Havalimanı:</Text>
         <ModalSelector
           data={[
-            { key: 0, label: 'Ankara', value: 'Ankara' },
-            { key: 1, label: 'Istanbul', value: 'Istanbul' },
+            { key: 0, label: 'Istanbul', value: 'Istanbul' },
+            { key: 1, label: 'Ankara', value: 'Ankara' },
+            { key: 2, label: 'Izmir', value: 'Izmir' },
+            { key: 3, label: 'Konya', value: 'Konya' },
+            { key: 4, label: 'Trabzon', value: 'Trabzon' },
           ]}
           initValue={arrivalAirport}
           onChange={(option) => setVarisHavalimani(option.value)}
@@ -131,7 +143,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   ucusBulButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'darkblue',
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
@@ -157,5 +169,3 @@ const styles = StyleSheet.create({
 });
 
 export default MainScreen;
-
-

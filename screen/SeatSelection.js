@@ -3,8 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Button } from 're
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import app from '../firebase';
-import * as Notifications from "expo-notifications";
-import { db, setDoc, addDoc, collection } from "../firebase";
 import { getUserSession } from './userService';
 
 const SeatSelection = ({ route, navigation }) => {
@@ -12,7 +10,6 @@ const SeatSelection = ({ route, navigation }) => {
   const { kalkisHavalimani, varisHavalimani, tarih, kalkisSaati, varisSaati, fiyat } = route.params;
   const auth = getAuth(app);
   const firestore = getFirestore(app);
-  const [userId, setId] = useState(null);
   const [userid, setid] = useState(null);
   const [userName, setUserName] = useState(null);
   const [userSurName, setUserSurName] = useState(null);
@@ -24,20 +21,9 @@ const SeatSelection = ({ route, navigation }) => {
     navigation.navigate('Login');
   };
 
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: false,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-    }),
-  });
-
   useEffect(() => {
     const requestPermissions = async () => {
-      const { granted } = await Notifications.requestPermissionsAsync();
-      if (!granted) {
-        console.log("Permission not granted");
-      }
+
       const cleanUp = onAuthStateChanged(auth, async (user) => {
         if (user) {
           const userDocRef = doc(firestore, 'users', await getUserSession());

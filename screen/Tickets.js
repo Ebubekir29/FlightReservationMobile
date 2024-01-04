@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import app from '../firebase';
 import { db } from "../firebase";
-import { getFirestore, collection, addDoc, doc, getDoc,query,where,getDocs,updateDoc,increment } from 'firebase/firestore';
+import { getFirestore, collection,query,where,getDocs,increment } from 'firebase/firestore';
 import { getUserSession } from './userService';
-const Tickets = ({ route }) => {
-  const [userid, setid] = useState(null);
+const Tickets = () => {
   const [items, setItems] = useState([]);
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
 
   useEffect(() => {
     ticketGet();
@@ -45,7 +40,6 @@ const Tickets = ({ route }) => {
                   <Text style={styles.nameText}>Varış Saati : {item.data.varisSaati}</Text>
                   <Text style={styles.nameText}>Koltuk No : {item.data.selectedSeat}</Text>
                   <Text style={styles.nameText}>Bilet Fiyatı : {item.data.fiyat}</Text>
-
                 </View>
                 <View style={{ margin: 10 }}>
                 </View>
@@ -61,27 +55,10 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
-    header: {
-      height: 100, 
-      width: '100%',
-      backgroundColor: '#fff', 
-      elevation: 5,
-      paddingLeft:10,
-      justifyContent:'center',
-      paddingTop:30
-    },
-    headerText:{
-      fontSize:18,
-      fontWeight:'700',
-      width:'70%',
-      marginTop:20
-    },
-  
     itemText:{
       width:'80%',
       marginLeft:10
     },
-  
     itemView: {
       flexDirection: 'row',
       width: '90%',
@@ -93,29 +70,10 @@ const styles = StyleSheet.create({
       height: 300,
       marginBottom: 10,
     },
-  
     nameText: {
       fontSize: 18,
       fontWeight: '700',
     },
-  
-    icon:{
-      width:24,
-      height:24,
-    },
-  
-    butonEkle:{
-      backgroundColor:'#5246f2',
-        width:'30%',
-        height:40,
-        borderRadius:10,
-        alignSelf:'flex-end',
-        justifyContent:'center',
-        alignItems:'center',
-        marginRight:10,
-        marginBottom:20
-    },
-  
   })
 
 export default Tickets;

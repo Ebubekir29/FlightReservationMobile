@@ -46,7 +46,7 @@ const RouteCreate = () => {
           <TextInput onChangeText={(text) => setsaatVaris(text)} placeholder='Varış Saati' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => setbiletFiyat(text)} placeholder='Bilet Fiyatı' style={styles.inputStyle} />
           <TouchableOpacity onPress={routeCreate} style={styles.butonYukle}>
-            <Text style={{ color: '#fff' }}>Rota'yı Ekle</Text>
+            <Text style={{ color: '#fff' }}>Rota Ekle</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

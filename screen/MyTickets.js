@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import app from '../firebase';
-import { getFirestore,db, doc, getDoc,addDoc,collection } from 'firebase/firestore';
+import { getFirestore} from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 const MyTickets = ({ route }) => {
   const { kalkisHavalimani, varisHavalimani, tarih, kalkisSaati, varisSaati, 
-    fiyat, selectedSeat,userName,userSurName,userid } = route.params;
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
+    fiyat, selectedSeat,userName,userSurName } = route.params;
+
   const navigation = useNavigation();
  
   const handleHome = () => {

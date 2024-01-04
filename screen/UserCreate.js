@@ -62,7 +62,7 @@ const SignupScreen = () => {
           <TextInput onChangeText={(text) => setPassword(text)} placeholder="Şifre" style={styles.inputs} />
           <TextInput onChangeText={(text) => setRole(text)} placeholder="Role" style={styles.inputs} />
           <TouchableOpacity onPress={SignUp} style={styles.buttonSignup}>
-            <Text style={styles.buttonText}>Kayıt Ol</Text>
+            <Text style={styles.buttonText}>Kaydet</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

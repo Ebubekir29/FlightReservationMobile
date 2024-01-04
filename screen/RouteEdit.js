@@ -27,8 +27,8 @@ const RouteEdit = () => {
         fiyat: fiyat,
       })
       .then(()=>{
-        alert("Veriler Başarıyla Güncellendi");
-        navigation.navigate('RouteGet');
+        alert("Rota Başarıyla Güncellendi");
+        navigation.navigate('Profile');
       }) 
     }catch(e){
       alert("Güncelleme başarısız,error"+e);

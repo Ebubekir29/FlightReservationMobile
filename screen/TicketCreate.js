@@ -53,7 +53,7 @@ const TicketCreate = () => {
           <TextInput onChangeText={(text) => setSelectedSeat(text)} placeholder='Koltuk No' style={styles.inputStyle} />
           <TextInput onChangeText={(text) => setFiyat(text)} placeholder='Bilet Fiyatı' style={styles.inputStyle} />
           <TouchableOpacity onPress={ticketCreate} style={styles.buttonStyle}>
-            <Text style={{ color: '#fff' }}>Bilet'i Ekle</Text>
+            <Text style={{ color: '#fff' }}>Bilet Ekle</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -22,25 +22,36 @@ import UserEdit from './screen/UserEdit';
 import UserGet from './screen/UserGet';
 import Tickets from './screen/Tickets';
 import Payement from './screen/Payement';
+import EditProfile from './screen/EditProfile';
+import EditUserProfile from './screen/EditUserProfile';
 
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
   const BottomTabs = () => {
     return (
-      <Tab.Navigator>
-        <Tab.Screen name="Main" component={MainScreen} options={{
+      <Tab.Navigator  screenOptions={{
+        tabBarStyle: {
+          backgroundColor: 'black', 
+        },
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'white',
+        tabBarLabelStyle: {
+          fontSize: 14,
+        },
+      }}>
+        <Tab.Screen name="Home" component={MainScreen} options={{
           tabBarLabel: "Home", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
-            <Entypo name="home" size={24} color="black" />
+            <Entypo name="home" size={24} color="white" />
           ) : (
-            <AntDesign name="home" size={24} color="black" />
+            <AntDesign name="home" size={24} color="white" />
           ),
         }} />
          <Tab.Screen name="Profile" component={ProfileScreen} options={{
           tabBarLabel: "Profile", headerShown: false, tabBarIcon: ({ focused }) => focused ? (
-            <Ionicons name="person" size={24} color="black" />
+            <Ionicons name="person" size={24} color="white" />
           ) : (
-            <Ionicons name="person-outline" size={24} color="black" />
+            <Ionicons name="person-outline" size={24} color="white" />
           ),
         }} />
       </Tab.Navigator>
@@ -98,6 +109,12 @@ const StackNavigator = () => {
           headerShown: false
         }}/>
         <Stack.Screen name="Payment" component={Payement}   options={{
+          headerShown: false
+        }}/>
+        <Stack.Screen name="EditProfile" component={EditProfile}   options={{
+          headerShown: false
+        }}/>
+        <Stack.Screen name="EditUserProfile" component={EditUserProfile}   options={{
           headerShown: false
         }}/>
       </Stack.Navigator>

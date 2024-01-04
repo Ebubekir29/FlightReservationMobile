@@ -11,8 +11,6 @@ const UserEdit = () => {
   const [userSurName, setUserSurName] = useState(route.params.data.userSurName);
   const [userPhone, setuserPhone] = useState(route.params.data.userPhone);
   const [userTcNo, setUserTcNo] = useState(route.params.data.userTcNo);
-  const [userEmail, setUserEmail] = useState(route.params.data.userEmail);
-  const [userSifre, setUserSifre] = useState(route.params.data.userSifre);
   const [role, setRole] = useState(route.params.data.role);
 
   const navigation = useNavigation();
@@ -24,13 +22,11 @@ const UserEdit = () => {
         userSurName: userSurName,
         userPhone: userPhone,
         userTcNo: userTcNo,
-        userEmail: userEmail,
-        userSifre: userSifre,
         role: role
       })
       .then(()=>{
-        alert("Veriler Başarıyla Güncellendi");
-        navigation.navigate('UserGet');
+        alert("Kullanıcı Başarıyla Güncellendi");
+        navigation.navigate('Profile');
       }) 
     }catch(e){
       alert("Güncelleme başarısız,error"+e);
@@ -43,14 +39,30 @@ const UserEdit = () => {
     <View style={styles.header}>
       <Text style={styles.headerText}>User Edit</Text>
     </View>
+    <View style={styles.inputContainer}>
+      <Text style={styles.inputLabel}>Kullanıcı Adı</Text>
       <TextInput onChangeText={(text) => setUserName(text)} value={userName} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setUserSurName(text)} value={userSurName}  style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setUserEmail(text)} value={userEmail}  style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setuserPhone(text)} value={userPhone}  style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setUserTcNo(text)} value={userTcNo}  style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setUserSifre(text)} value={userSifre} style={styles.inputStyle} />
-      <TextInput onChangeText={(text) => setRole(text)} value={role}  style={styles.inputStyle} />
+    </View>
 
+    <View style={styles.inputContainer}>
+      <Text style={styles.inputLabel}>Kullanıcı Soyadı</Text>
+      <TextInput onChangeText={(text) => setUserSurName(text)} value={userSurName} style={styles.inputStyle} />
+    </View>
+
+    <View style={styles.inputContainer}>
+      <Text style={styles.inputLabel}>Telefon Numarası</Text>
+      <TextInput onChangeText={(text) => setuserPhone(text)} value={userPhone} style={styles.inputStyle} />
+    </View>
+
+    <View style={styles.inputContainer}>
+      <Text style={styles.inputLabel}>TC Kimlik Numarası</Text>
+      <TextInput onChangeText={(text) => setUserTcNo(text)} value={userTcNo} style={styles.inputStyle} />
+    </View>
+
+    <View style={styles.inputContainer}>
+      <Text style={styles.inputLabel}>Rol</Text>
+      <TextInput onChangeText={(text) => setRole(text)} value={role} style={styles.inputStyle} />
+    </View>
 
     <TouchableOpacity onPress={userEdit} style={styles.butonYukle}>
       <Text style={{color:'#fff'}}>Kullanıcı'yı Düzenle</Text>
@@ -88,7 +100,7 @@ export default UserEdit;
       borderWidth:0.5,
       paddingLeft:20,
       paddingRight:20,
-      marginTop:30,
+      marginTop:5,
       alignSelf:'center'
     },
 
@@ -101,6 +113,11 @@ export default UserEdit;
       marginTop:20,
       justifyContent:'center',
       alignItems:'center'
+    },
+    inputLabel: {
+      marginTop:10,
+      marginLeft:25,
+      fontSize: 16,
     }
 
   });

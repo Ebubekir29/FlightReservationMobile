@@ -31,8 +31,8 @@ const Ucuslar = ({ route }) => {
     fetchUcuslar();
   }, [departureAirport, arrivalAirport,formattedDate]);
 
-  const handleLogout = () => {
-    navigation.navigate('Login')
+  const handleHome = () => {
+    navigation.navigate('Main')
   };
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleRowPress(item)}>
@@ -85,8 +85,8 @@ const Ucuslar = ({ route }) => {
         <TouchableOpacity onPress={selectedUcus} style={styles.buttonSelected}>
           <Text style={styles.buttonText}>Devam Et</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLogout()} style={styles.buttonSelected}>
-          <Text style={styles.buttonText}>Çıkış Yap</Text>
+        <TouchableOpacity onPress={() => handleHome()} style={styles.buttonSelected}>
+          <Text style={styles.buttonText}>Ana Sayfa</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -143,12 +143,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     textAlign: 'center', 
-  },
-  logoutButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 10,
-    alignSelf: 'center',
   },
 });
 

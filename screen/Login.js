@@ -6,24 +6,26 @@ import app from '../firebase';
 import { Alert,KeyboardAvoidingView,ImageBackground,StyleSheet, Text, View, TextInput , TouchableOpacity} from 'react-native';
 import { getAuth,signInWithEmailAndPassword} from "firebase/auth";
 import { setUserSessionWithId } from './userService';
-const auth = getAuth();
-const firestore = getFirestore(app);
-const LoginScreen = () => {
-  const [userId,setUserId] = useState("");
-  const [email, setEmail] = useState("");
+
+  const auth                    = getAuth();
+  const firestore               = getFirestore(app);
+  const LoginScreen             = () => {
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
+
   const Login = () => {
       signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const docRef = doc(firestore, "users", userCredential.user.uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            Alert.alert("Login Succesfull.")
+            Alert.alert("Giris Basarili..")
+            setEmail("");
+            setPassword("");
             setUserSessionWithId(userCredential.user.uid);
             const user = userCredential.user;
             console.log(user.email);
             console.log(userCredential.user.uid);
-            const userData = docSnap.data();
             navigation.navigate('Main');   
           } else {      
             Alert.alert("Tekrar Deneyin") 
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3081D0',
+    backgroundColor: 'darkblue',
     marginTop:5,
     marginBottom:10,
   },
@@ -127,9 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3081D0',
-    
-    
+    backgroundColor: 'darkblue',
   },
   buttonText: {
     color: 'white',

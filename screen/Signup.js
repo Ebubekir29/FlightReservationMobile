@@ -12,7 +12,6 @@ const SignupScreen = () => {
   const [tcNo, setTcNo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const navigation = useNavigation();
 
   const SignUp = () => {
@@ -68,7 +67,6 @@ const SignupScreen = () => {
     </KeyboardAvoidingView>
   );
 };
-
 export default SignupScreen;
 
 const styles = StyleSheet.create({
@@ -80,12 +78,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#2E2E2E',
-    marginBottom: 20,
   },
   formContainer: {
     width: '80%',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, getDoc} from 'firebase/firestore';
 import app from '../firebase';
 import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +28,10 @@ const ProfileScreen = () => {
   const HandleMyTickets = () => {
     navigation.navigate('Tickets', { userId: auth.currentUser.uid });
   };
-
+  
+  const HandleEditProfile = () => {
+    navigation.navigate('EditProfile', { userId: auth.currentUser.uid });
+  };
   const HandleLogOut = () => {
 
     auth.signOut().then(() => {
@@ -49,7 +52,8 @@ const ProfileScreen = () => {
           if (userDoc.exists()) {
             const userData = userDoc.data();
             setRole(userData.role);
-            console.log(userData);
+            console.log(userData.userName);
+            setUserName(userData.userName)
           } else {
             console.log('Kullanici rol bulunamadi.');
           }
@@ -68,7 +72,7 @@ const ProfileScreen = () => {
     if (role === 'admin') {
       return (
         <View style={{ marginTop: '30%', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.Text}>Merhaba, {role} {userName}</Text>
+          <Text style={styles.Text}>Merhaba, {userName}</Text>
 
           <TouchableOpacity onPress={RouteGet} style={styles.butonYukle}>
             <Text style={styles.buttonText}>Rotaları Listele</Text>
@@ -87,9 +91,12 @@ const ProfileScreen = () => {
     } else if (role === 'user') {
       return (
         <View style={{ marginTop: '30%', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.Text}>Merhaba, {role} {userName}</Text>
+          <Text style={styles.Text}>Merhaba,  {userName}</Text>
           <TouchableOpacity onPress={HandleMyTickets} style={styles.butonYukle}>
             <Text style={styles.buttonText}>Biletlerim</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={HandleEditProfile} style={styles.butonYukle}>
+            <Text style={styles.buttonText}>Profil Düzenle</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={HandleLogOut} style={styles.butonYukle}>
             <Text style={styles.buttonText}>Cikis Yap</Text>
@@ -123,25 +130,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
-  button: {
-    backgroundColor: '#3498db',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
   buttonText: {
     color: 'white',
     fontSize: 18,
-  },
-
-  buttonLogin: {
-    marginTop: 20,
-    width: 150,
-    height: 40,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#3081D0',
   },
   butonYukle: {
     backgroundColor: '#5246f2',
