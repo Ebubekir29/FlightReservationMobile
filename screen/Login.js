@@ -53,7 +53,7 @@ import { setUserSessionWithId } from './userService';
       ></ImageBackground>
       
       <View style={styles.container}>
-        <Text style={styles.title}>Ucak Rezesvasyonu</Text>
+        <Text style={styles.title}>Ucak Rezervasyonu</Text>
         <TextInput onChangeText={text =>setEmail(text)} value={email} placeholder="E-mail" style={styles.loginInput} />
         <TextInput onChangeText={text =>setPassword(text)} value={password} placeholder="Şifre"   style={styles.loginInput} secureTextEntry={true}/>
         <View style={styles.container}>

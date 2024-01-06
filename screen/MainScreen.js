@@ -16,7 +16,6 @@ const MainScreen = () => {
   const [date, setDate] = useState(new Date());
   const [showSelectedDate, setShowSelectedDate] = useState(false);
   const formattedDate = date.toLocaleDateString('tr-TR');
-  console.log("tarih",formattedDate);
   const handleUcusBul = async () => {
     if (!departureAirport || !arrivalAirport) {
       alert('Lütfen ucus girin.');

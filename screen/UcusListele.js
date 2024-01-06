@@ -11,7 +11,6 @@ const Ucuslar = ({ route }) => {
   const [selectedFlightId, setSelectedFlightId] = useState(null);
   const firestore = getFirestore(app);
   const navigation = useNavigation();
-  console.log("asada",formattedDate)
   useEffect(() => {
     const fetchUcuslar = async () => {
       try {

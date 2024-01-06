@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc} from 'firebase/firestore';
 import app from '../firebase';
-import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert,View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getUserSession } from './userService';
 
@@ -36,7 +36,7 @@ const ProfileScreen = () => {
 
     auth.signOut().then(() => {
       console.log('Kullanıcı çıkış yaptı');
-
+      Alert.alert("Cikis yapildi");
       navigation.navigate('Login'); 
     }).catch((error) => {
       console.error('Çıkış yaparken bir hata oluştu:', error.message);

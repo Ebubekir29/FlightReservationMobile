@@ -12,6 +12,7 @@ Notifications.setNotificationHandler({
       shouldSetBadge: false,
     }),
   });
+  
 const MyTickets = ({ route }) => {
     const { kalkisHavalimani, varisHavalimani, tarih,
          kalkisSaati, varisSaati, fiyat,userName,userSurName,selectedSeat,userid } = route.params;
